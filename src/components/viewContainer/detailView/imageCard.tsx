@@ -2,6 +2,8 @@ import React, { Component, CSSProperties, Fragment } from 'react';
 import Spinner from '../../spinner';
 import Modal from '../../modal';
 import { ThemedCSSProperties, ThemeContext, ThemeState } from '../../../contexts/themeContext';
+import ls from 'local-storage';
+import { array } from 'prop-types';
 
 export interface ImageUrls {
     full: string
@@ -14,6 +16,7 @@ export interface ImageUrls {
 interface Props {
     urls: ImageUrls
 }
+
 interface State {
     isHover: boolean
     isModalOpen: boolean
@@ -23,8 +26,10 @@ export default class ImageCard extends Component<Props> {
 
     state: State = {
         isHover: false,
-        isModalOpen: false
+        isModalOpen: false,
     }
+
+    private arrayLikedImages = []
 
     style(theme: ThemeState): CSSProperties {
         const hover: CSSProperties = this.state.isHover ? {
@@ -36,10 +41,29 @@ export default class ImageCard extends Component<Props> {
             ...hover
         }
     }
+    componentDidMount() {
+        ls.set("likedImages", this.arrayLikedImages)
+    }
+    onMouseEnter = () => {
+        this.setState({ 
+            isHover: true 
+        })
+    }
 
-    onMouseEnter = () => this.setState({ isHover: true })
     onMouseLeave = () => this.setState({ isHover: false })
-    openModal = () => this.setState({ isModalOpen: true });
+    openModal = () =>  this.setState({ isModalOpen: true });
+
+    likeImage = (event) => {
+        const imageStorage = this.props.urls.small
+        const getItems = ls.get("likedImages")
+
+        getItems.push(imageStorage)
+
+        ls.set("likedImages", getItems)
+      
+        event.stopPropagation();
+    }
+    
     closeModal = () => this.setState({ isModalOpen: false });
 
     render() {
@@ -54,7 +78,19 @@ export default class ImageCard extends Component<Props> {
                             onMouseLeave={this.onMouseLeave}
                             onClick={this.openModal}
                         >
-                            {urls.small ? <img src={urls.small} style={card}/> : <Spinner/>}
+                            {urls.small ? 
+                            <div style={cardContainer}> 
+                                <i 
+                                    onClick={this.likeImage} 
+                                    style={likeIcon} 
+                                    className="heart outline large icon">
+                                </i>
+                                <img 
+                                    src={urls.small} 
+                                    style={card}
+                                /> 
+                            </div> 
+                            : <Spinner/> }
                         </div>
                     )}
                 </ThemeContext.Consumer>
@@ -82,10 +118,25 @@ const imageContainer: ThemedCSSProperties = (theme) => ({
 const card: CSSProperties = {
     width: '100%',
     height: '100%',
-    objectFit: 'cover'
+    objectFit: 'cover',
+    position: 'relative',
+    zIndex: 50
 }
 const preview: CSSProperties = {
     width: '100%',
     height: '100%',
     objectFit: 'contain'
+}
+
+const likeIcon: CSSProperties = {
+    color: 'red',
+    position: 'absolute',
+    top: '8px',
+    right: '16px',
+    zIndex: 100
+}
+
+const cardContainer: CSSProperties = {
+    height: '100%',
+    position: 'relative'
 }

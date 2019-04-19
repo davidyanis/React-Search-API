@@ -7,6 +7,7 @@ import { ThemedCSSProperties, ThemeContext } from '../../../contexts/themeContex
 interface Props {
     view: string
 }
+
 interface State {
     imagesUrls: ImageUrls[],
     isLoading: boolean
@@ -52,7 +53,9 @@ export default class ImageSection extends Component<Props, State> {
                     <div style={root(theme)}>
                         {this.state.imagesUrls.map((urls, index) =>
                             <ImageCard key={index} urls={urls} />
+                           
                         )}
+                         
                     </div>
                 )}
             </ThemeContext.Consumer>

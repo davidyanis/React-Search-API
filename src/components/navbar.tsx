@@ -1,23 +1,29 @@
 import React, { CSSProperties } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, Route } from 'react-router-dom';
 import { ThemeContext, ThemedCSSProperties } from '../contexts/themeContext';
 import ThemeToggleButton from './themeToggleButton';
+import MasterView from './viewContainer/masterView';
 
 /** React function component */
 export default function Navbar() {
 
     return (
         <ThemeContext.Consumer>
+           
             {({ theme }) => (
                 <div style={navbar(theme)}>
+                    
                     <Link to="/" style={navbarItem(theme)}>
                         <span style={header}>React<span className="sm-hidden"> Playground</span></span>
                     </Link>
                     <div style={navbarItem(theme)}>
                         <ThemeToggleButton/>
                     </div>
+                    
                 </div>
+                
             )}
+            
         </ThemeContext.Consumer>
     );
 }

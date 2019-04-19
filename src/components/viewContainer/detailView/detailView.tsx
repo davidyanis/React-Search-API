@@ -36,7 +36,7 @@ export default class DetailView extends Component<Props, State> {
             <ThemeContext.Consumer>
                 {({ theme }) => (
                     <div style={container}>
-                        <img src={this.imageSrc} style={{ ...fullscreenAbsolute }}/>
+                      {/*   <img src={this.imageSrc} style={{ ...fullscreenAbsolute }}/> */}
                         <div style={{ ...content(theme), ...fullscreenAbsolute }}>
 
                             <div style={flexContainer}>

@@ -1,14 +1,20 @@
 import React, { Suspense, CSSProperties } from 'react';
-import { Route, Switch, Link } from 'react-router-dom';
-import { centeredContent, fullscreenAbsolute} from '../../css';
+import { Route, Switch, Link, RouteComponentProps} from 'react-router-dom';
 import Spinner from '../spinner';
+import LikedSection from './likedSection'
+import ls from 'local-storage';
+
+import PropTypes from 'prop-types';
+import { Button, Icon } from 'semantic-ui-react'
+
+
 
 
 const MasterView = React.lazy(() => import(/* webpackChunkName: "masterView" */ './masterView'));
 const DetailView = React.lazy(() => import(/* webpackChunkName: "detailView" */ './detailView/detailView'));
 
-interface Props {
-    
+interface Props extends RouteComponentProps  {
+    view: string
 }
 
 interface State {
@@ -16,64 +22,96 @@ interface State {
 }
 /** React function component */
 export default class ViewContainer extends React.Component<Props, State> {
+    view: any;
+   
     constructor(props: Props) {
         super(props)
 
         this.state = {
-            inputValue : ''
+            inputValue : '',
         }
 
         this.updateInput = this.updateInput.bind(this)
         this.handleSubmit = this.handleSubmit.bind(this)
     }
 
-    updateInput(event: any) {
+
+
+    updateInput(event) {
         this.setState({inputValue: event.target.value})
+       
     }
 
-    handleSubmit(event: any) {
-        event.preventDefault()
-        console.log(this.state.inputValue)
+    handleSubmit(event) {
+        event.stopPropagation();
     }
+
+    static contextTypes = {
+        router: PropTypes.object
+    }
+    
+    redirectToTarget = (event) => {
+        event.stopPropagation()
+        if (event.which === 13) {
+            this.context.router.history.push(this.state.inputValue)
+        }
+      
+
+    }
+
 
    /*  private detailViews = ['forest', 'sky', 'desert']; */
 
     render() {
-    return (
-        <Suspense fallback={<Spinner/>}>
-            <Switch>
-                <div style={{ ...centeredContent, ...fullscreenAbsolute }}>
-                <Link to={this.state.inputValue}></Link>
-                    <form onSubmit={this.handleSubmit}>
-                        <input style={ inputField } 
-                        onChange={this.updateInput}
-                        type="text" 
-                        placeholder="Search.." 
-                        />
-                        <button 
-                        onClick={this.handleSubmit}
-                        style={ searchButton } 
-                        type="submit" >Search</button>
-                    </form>
-                </div>
-                {/* <Route exact path="/" render={() =>
-                    <MasterView detailViews={detailViews}/>
-                }/> */}
-                    {/* <Route path="/forest" component={DetailView}/>
-                    <Route path="/sky" component={DetailView}/>
-                    <Route path="/desert" component={DetailView}/> */}
-            </Switch>
-        </Suspense>
-    );
+        return (
+            <Suspense fallback={<Spinner/>}>
+                    <Switch>
+                        <Route path="/:id" component={DetailView}></Route>
+                
+                       
+                        <div style={centeredForm}>
+                        
+                            <form onSubmit={this.handleSubmit}>
+                                <input style={ inputField } 
+                                onChange={this.updateInput}
+                                type="text" 
+                                placeholder="Search.." 
+                                onKeyPress={this.redirectToTarget}
+                                />
+                                <button 
+                                style={ searchButton } 
+                                type="submit" 
+                                >
+                                <Link to={this.state.inputValue} style={LinkStyling}>Search</Link>
+                                </button>
+                            </form>
+                            <div>
+                                <LikedSection view={this.view}/>
+                            </div>
+                        </div>
+                        
+                    </Switch>
+                    
+            </Suspense>
+            
+        );
     }
 }
 
 const inputField: CSSProperties = {
     width: '10em',
     fontSize: '1.3em',
-    borderRadius: '0.3em',
-    padding: '0.4em'
+    padding: '0.4em',
+    backgroundColor: 'inherit',
+    borderTop: 'none',
+    borderLeft: 'none',
+    borderRight: 'none',
+    borderBottom: '1px solid grey',
+    outline: 'none',
+    margin: 0,
+    color: 'white'
 }
+
 const searchButton: CSSProperties = {
     marginLeft: '1em',
     padding: '0.4em',
@@ -85,4 +123,17 @@ const searchButton: CSSProperties = {
     cursor: 'pointer',
     borderRadius: '1em'
 }
+
+const LinkStyling: CSSProperties = {
+    color: 'white',
+    textDecoration: 'none'
+}
+
+const centeredForm: CSSProperties = {
+    height: '100%',
+    textAlign: 'center',
+    marginTop: '5em'
+}
+
+
 

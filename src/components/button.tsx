@@ -26,7 +26,8 @@ export default class Button extends Component<Props, State> {
         const { onClick, children } = this.props
         return (
             <ThemeContext.Consumer>
-                {({ theme }) => (
+                {({ theme }) => ( 
+                    
                     <button
                         onClick={onClick}
                         onMouseEnter={this.onMouseEnter}
