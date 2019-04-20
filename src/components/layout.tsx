@@ -4,8 +4,10 @@ import ViewContainer from './viewContainer/viewContainer';
 import { fullScreen } from '../css';
 import { ThemedCSSProperties, ThemeContext } from '../contexts/themeContext';
 
-interface Props {}
-
+interface Props {
+    
+}
+    
 interface State {
     currentView: string
 }
@@ -19,7 +21,7 @@ export default class Layout extends Component<Props, State> {
                 {({ theme }) => (
                     <div style={{ ...columnFlex, ...fullScreen, ...background(theme) }}>
                         <Navbar/>
-                        <ViewContainer/>
+                        <ViewContainer />
                     </div>
                 )}
             </ThemeContext.Consumer>

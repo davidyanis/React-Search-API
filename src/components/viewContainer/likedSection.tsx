@@ -6,29 +6,25 @@ import { ThemedCSSProperties, ThemeContext } from '../../contexts/themeContext';
 
 import ls from 'local-storage';
 
-interface Props {
-    view: string
-}
 
+export default class LikedSection extends Component {
+   
+    private getLikedImages = ls.get("likedImages") || []
 
-export default class LikedSection extends Component<Props, {}> {
-    
-    private getLikedImages = ls.get("likedImages")
-    
     render() {
             return ( 
                 <ThemeContext.Consumer>
                     {({ theme }) => (
                         <div style={root(theme)}>
-                            {this.getLikedImages.map((urls, index) =>
+                             {this.getLikedImages.map((urls, index) =>
                                 <LikedCards key={index} urls={urls} />
-                            )}
-                            
+                            )} 
                         </div>
+                            
                     )}
                 </ThemeContext.Consumer>
             )
-        }
+    }
 }
 
 const root: ThemedCSSProperties = (theme) => ({

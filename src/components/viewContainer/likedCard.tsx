@@ -63,7 +63,7 @@ export default class LikedCards extends Component<Props> {
                                 className="heart large icon">
                             </i>
                             <img 
-                                src={ls.get("likedImages")} 
+                                src={this.props.urls} 
                                 style={card}
                             /> 
                         </div> 

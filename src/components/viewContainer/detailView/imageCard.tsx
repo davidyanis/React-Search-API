@@ -1,4 +1,5 @@
 import React, { Component, CSSProperties, Fragment } from 'react';
+import { RouteComponentProps } from 'react-router-dom'
 import Spinner from '../../spinner';
 import Modal from '../../modal';
 import { ThemedCSSProperties, ThemeContext, ThemeState } from '../../../contexts/themeContext';
@@ -13,20 +14,35 @@ export interface ImageUrls {
     thumb: string
 }
 
-interface Props {
+interface Props extends RouteComponentProps {
     urls: ImageUrls
 }
 
 interface State {
     isHover: boolean
     isModalOpen: boolean
+    heart: string
 }
 
-export default class ImageCard extends Component<Props> {
+export default class ImageCard extends Component<Props, State> {
+    
+    constructor(props: Props) {
+        super(props)
 
-    state: State = {
-        isHover: false,
-        isModalOpen: false,
+        this.state = {
+            isHover: false,
+            isModalOpen: false,
+            heart: 'heart outline large icon'
+        }
+
+        this.likeImage = this.likeImage.bind(this);
+        
+        if (!ls.get("likedImages")) {
+            ls.set("likedImages", this.arrayLikedImages)
+        } 
+
+        console.log(this.props.location)
+
     }
 
     private arrayLikedImages = []
@@ -41,9 +57,7 @@ export default class ImageCard extends Component<Props> {
             ...hover
         }
     }
-    componentDidMount() {
-        ls.set("likedImages", this.arrayLikedImages)
-    }
+
     onMouseEnter = () => {
         this.setState({ 
             isHover: true 
@@ -53,21 +67,21 @@ export default class ImageCard extends Component<Props> {
     onMouseLeave = () => this.setState({ isHover: false })
     openModal = () =>  this.setState({ isModalOpen: true });
 
-    likeImage = (event) => {
+    likeImage(event) {
         const imageStorage = this.props.urls.small
         const getItems = ls.get("likedImages")
 
+        this.setState({ heart: 'heart large icon' });
+        
         getItems.push(imageStorage)
 
         ls.set("likedImages", getItems)
-      
         event.stopPropagation();
     }
     
     closeModal = () => this.setState({ isModalOpen: false });
 
     render() {
-        const { urls } = this.props
         return (
             <Fragment>
                 <ThemeContext.Consumer>
@@ -78,15 +92,16 @@ export default class ImageCard extends Component<Props> {
                             onMouseLeave={this.onMouseLeave}
                             onClick={this.openModal}
                         >
-                            {urls.small ? 
+                            {this.props.urls.small ? 
                             <div style={cardContainer}> 
                                 <i 
                                     onClick={this.likeImage} 
                                     style={likeIcon} 
-                                    className="heart outline large icon">
+                                    className={this.state.heart} 
+                                    >
                                 </i>
                                 <img 
-                                    src={urls.small} 
+                                    src={this.props.urls.small} 
                                     style={card}
                                 /> 
                             </div> 
@@ -97,7 +112,7 @@ export default class ImageCard extends Component<Props> {
                 {
                     this.state.isModalOpen ? (
                         <Modal shouldClose={this.closeModal}>
-                            <img src={urls.regular} style={preview}/>
+                            <img src={this.props.urls.regular} style={preview}/>
                         </Modal>
                     ) : null
                 }

@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import Axios, { AxiosResponse } from 'axios';
+import ls from 'local-storage';
 
 import ImageCard, { ImageUrls } from './imageCard';
+import LikedCards from '../likedCard';
 import { ThemedCSSProperties, ThemeContext } from '../../../contexts/themeContext';
 
 interface Props {
@@ -19,15 +21,19 @@ export default class ImageSection extends Component<Props, State> {
     readonly imageDatabaseApiUrl = "https://api.unsplash.com/search/photos/"
 
     state: State = {
-        imagesUrls: new Array(24).fill({}),
+        imagesUrls: new Array().fill({}),
         isLoading: true
     }
+    
+    private getLikedImages = ls.get("likedImages") || []
 
+  
     handleResponse(response: AxiosResponse) {
         if (response.data && response.data.results) {
             const images = response.data.results.map((img: any) => img.urls)
             this.setState({ imagesUrls: images, isLoading: false })
         }
+
     }
 
     async componentDidMount() {
@@ -51,11 +57,12 @@ export default class ImageSection extends Component<Props, State> {
             <ThemeContext.Consumer>
                 {({ theme }) => (
                     <div style={root(theme)}>
+                        {this.getLikedImages.map((urls, index) =>
+                            <LikedCards key={index} urls={urls} />
+                        )}
                         {this.state.imagesUrls.map((urls, index) =>
                             <ImageCard key={index} urls={urls} />
-                           
                         )}
-                         
                     </div>
                 )}
             </ThemeContext.Consumer>
