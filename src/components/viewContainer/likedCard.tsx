@@ -1,8 +1,6 @@
 import React, { Component, CSSProperties, Fragment } from 'react';
-import Spinner from '../spinner';
-import Modal from '../modal';
 import { ThemedCSSProperties, ThemeContext, ThemeState } from '../../contexts/themeContext';
-import ls from 'local-storage';
+
 
 export interface ImageUrls {
     full: string
@@ -14,6 +12,7 @@ export interface ImageUrls {
 
 interface Props {
     urls: ImageUrls
+    view: string
 }
 
 interface State {
@@ -56,14 +55,13 @@ export default class LikedCards extends Component<Props> {
                             onMouseEnter={this.onMouseEnter}
                             onMouseLeave={this.onMouseLeave}
                         >
-                            
                         <div style={cardContainer}> 
                             <i 
                                 style={likeIcon} 
                                 className="heart large icon">
                             </i>
                             <img 
-                                src={this.props.urls} 
+                                src={this.props.urls.full} 
                                 style={card}
                             /> 
                         </div> 

@@ -1,14 +1,9 @@
 import React, { Suspense, CSSProperties } from 'react';
 import { Route, Switch, Link, RouteComponentProps} from 'react-router-dom';
 import Spinner from '../spinner';
-import PropTypes from 'prop-types';
 
-import LikedSection from './likedSection'
 import SearchBar from './searchBar'
-
-
-
-
+import ImageSection from './detailView/imageSection';
 
 
 
@@ -27,7 +22,7 @@ export default class ViewContainer extends React.Component {
                         <Route path="/:id" component={DetailView}></Route>       
                         <div style={centeredForm}>
                             <SearchBar />
-                            <LikedSection />
+                            <ImageSection />
                         </div>
                     </Switch>
                     

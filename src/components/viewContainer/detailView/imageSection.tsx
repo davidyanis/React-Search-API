@@ -12,7 +12,8 @@ interface Props {
 
 interface State {
     imagesUrls: ImageUrls[],
-    isLoading: boolean
+    isLoading: boolean,
+    likedImages: ImageUrls[]
 }
 
 export default class ImageSection extends Component<Props, State> {
@@ -22,19 +23,26 @@ export default class ImageSection extends Component<Props, State> {
 
     state: State = {
         imagesUrls: new Array().fill({}),
-        isLoading: true
+        isLoading: true,
+        likedImages: ls.get(this.props.view) || []
     }
-    
-    private getLikedImages = ls.get("likedImages") || []
-
+   
   
     handleResponse(response: AxiosResponse) {
         if (response.data && response.data.results) {
             const images = response.data.results.map((img: any) => img.urls)
             this.setState({ imagesUrls: images, isLoading: false })
         }
-
     }
+
+    handleImageLiked = (urls: ImageUrls) => {
+        this.setState(
+            { 
+                likedImages: ls.set(this.props.view, [urls.small])
+            }
+        )
+    }
+
 
     async componentDidMount() {
         try {
@@ -52,16 +60,20 @@ export default class ImageSection extends Component<Props, State> {
         }
     }
 
+    componentDidUpdate() {
+        
+    }
+
     render() {
         return (
             <ThemeContext.Consumer>
                 {({ theme }) => (
                     <div style={root(theme)}>
-                        {this.getLikedImages.map((urls, index) =>
-                            <LikedCards key={index} urls={urls} />
-                        )}
+                      {/*   {this.state.likedImages.map((urls, index) =>
+                            <ImageCard isLiked={true} view={this.props.view} key={index} urls={urls} onImageLiked={this.handleImageLiked} />
+                        )}  */}
                         {this.state.imagesUrls.map((urls, index) =>
-                            <ImageCard key={index} urls={urls} />
+                            <ImageCard isLiked={false} view={this.props.view} key={index} urls={urls} onImageLiked={this.handleImageLiked} />
                         )}
                     </div>
                 )}

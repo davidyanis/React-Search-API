@@ -1,10 +1,8 @@
 import React, { Component, CSSProperties, Fragment } from 'react';
-import { RouteComponentProps } from 'react-router-dom'
 import Spinner from '../../spinner';
 import Modal from '../../modal';
 import { ThemedCSSProperties, ThemeContext, ThemeState } from '../../../contexts/themeContext';
 import ls from 'local-storage';
-import { array } from 'prop-types';
 
 export interface ImageUrls {
     full: string
@@ -14,14 +12,16 @@ export interface ImageUrls {
     thumb: string
 }
 
-interface Props extends RouteComponentProps {
+interface Props {
     urls: ImageUrls
+    view: string
+    onImageLiked: (urls: ImageUrls) => void
+    isLiked: boolean
 }
 
 interface State {
     isHover: boolean
     isModalOpen: boolean
-    heart: string
 }
 
 export default class ImageCard extends Component<Props, State> {
@@ -31,22 +31,19 @@ export default class ImageCard extends Component<Props, State> {
 
         this.state = {
             isHover: false,
-            isModalOpen: false,
-            heart: 'heart outline large icon'
+            isModalOpen: false
         }
 
         this.likeImage = this.likeImage.bind(this);
-        
-        if (!ls.get("likedImages")) {
-            ls.set("likedImages", this.arrayLikedImages)
-        } 
-
-        console.log(this.props.location)
-
     }
 
-    private arrayLikedImages = []
-
+    iconClassName() {
+        if (this.props.isLiked) {
+            return 'large heart icon'
+        }
+        return 'large outline heart icon'
+    }
+    
     style(theme: ThemeState): CSSProperties {
         const hover: CSSProperties = this.state.isHover ? {
             boxShadow: `0 8px 40px -5px ${theme.foreground.darkened}`,
@@ -60,23 +57,20 @@ export default class ImageCard extends Component<Props, State> {
 
     onMouseEnter = () => {
         this.setState({ 
-            isHover: true 
+            isHover: true,
         })
     }
 
-    onMouseLeave = () => this.setState({ isHover: false })
+    onMouseLeave = () => {
+        this.setState({ 
+            isHover: false,
+        })
+    }
     openModal = () =>  this.setState({ isModalOpen: true });
 
     likeImage(event) {
-        const imageStorage = this.props.urls.small
-        const getItems = ls.get("likedImages")
-
-        this.setState({ heart: 'heart large icon' });
-        
-        getItems.push(imageStorage)
-
-        ls.set("likedImages", getItems)
         event.stopPropagation();
+        this.props.onImageLiked(this.props.urls);
     }
     
     closeModal = () => this.setState({ isModalOpen: false });
@@ -97,7 +91,7 @@ export default class ImageCard extends Component<Props, State> {
                                 <i 
                                     onClick={this.likeImage} 
                                     style={likeIcon} 
-                                    className={this.state.heart} 
+                                    className={this.iconClassName()} 
                                     >
                                 </i>
                                 <img 
@@ -148,7 +142,8 @@ const likeIcon: CSSProperties = {
     position: 'absolute',
     top: '8px',
     right: '16px',
-    zIndex: 100
+    zIndex: 100,
+    cursor: 'pointer'
 }
 
 const cardContainer: CSSProperties = {

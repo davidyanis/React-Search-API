@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import PropTypes from 'prop-types';
 import { ThemedCSSProperties, ThemeContext } from "../../contexts/themeContext"
 import ls from 'local-storage';
+
 interface Props {
 
 }
@@ -40,8 +41,6 @@ export default class SearchBar extends Component<Props, State> {
         if (event.which === 13) {
             this.context.router.history.push(this.state.inputValue)
         }
-      
-
     }
 
 
