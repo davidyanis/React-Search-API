@@ -39,6 +39,7 @@ export default class ImageCard extends Component<Props, State> {
 
     iconClassName() {
         if (this.props.isLiked) {
+        
             return 'large heart icon'
         }
         return 'large outline heart icon'
@@ -66,6 +67,7 @@ export default class ImageCard extends Component<Props, State> {
             isHover: false,
         })
     }
+
     openModal = () =>  this.setState({ isModalOpen: true });
 
     likeImage(event) {

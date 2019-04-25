@@ -7,7 +7,6 @@ import ImageSection from './detailView/imageSection';
 
 
 
-
 const MasterView = React.lazy(() => import(/* webpackChunkName: "masterView" */ './masterView'));
 const DetailView = React.lazy(() => import(/* webpackChunkName: "detailView" */ './detailView/detailView'));
 

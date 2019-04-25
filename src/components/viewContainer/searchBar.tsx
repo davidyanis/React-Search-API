@@ -28,7 +28,6 @@ export default class SearchBar extends Component<Props, State> {
     }
 
     handleSubmit(event) {
-        JSON.stringify(ls.set("searchInput", this.state.inputValue))
         event.stopPropagation();
     }
 
