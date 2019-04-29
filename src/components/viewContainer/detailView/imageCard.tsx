@@ -2,7 +2,6 @@ import React, { Component, CSSProperties, Fragment } from 'react';
 import Spinner from '../../spinner';
 import Modal from '../../modal';
 import { ThemedCSSProperties, ThemeContext, ThemeState } from '../../../contexts/themeContext';
-import ls from 'local-storage';
 
 export interface ImageUrls {
     full: string
@@ -15,8 +14,9 @@ export interface ImageUrls {
 interface Props {
     urls: ImageUrls
     view: string
-    onImageLiked: (urls: ImageUrls) => void
+    onImageLiked: (urls: ImageUrls, index: number) => void
     isLiked: boolean
+    index: number
 }
 
 interface State {
@@ -71,8 +71,8 @@ export default class ImageCard extends Component<Props, State> {
     openModal = () =>  this.setState({ isModalOpen: true });
 
     likeImage(event) {
+        this.props.onImageLiked(this.props.urls, this.props.index);
         event.stopPropagation();
-        this.props.onImageLiked(this.props.urls);
     }
     
     closeModal = () => this.setState({ isModalOpen: false });
@@ -94,7 +94,7 @@ export default class ImageCard extends Component<Props, State> {
                                     onClick={this.likeImage} 
                                     style={likeIcon} 
                                     className={this.iconClassName()} 
-                                    >
+                                >
                                 </i>
                                 <img 
                                     src={this.props.urls.small} 

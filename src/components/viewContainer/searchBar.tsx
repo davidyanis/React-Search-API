@@ -2,11 +2,12 @@ import React, { Component, CSSProperties } from 'react';
 import { Link } from 'react-router-dom'
 import PropTypes from 'prop-types';
 import { ThemedCSSProperties, ThemeContext } from "../../contexts/themeContext"
-import ls from 'local-storage';
+
 
 interface Props {
-
+    focusOnMount?: boolean
 }
+
 interface State {
     inputValue: string
 }
@@ -16,18 +17,33 @@ export default class SearchBar extends Component<Props, State> {
         super(props)
 
         this.state = {
-            inputValue: '',
+            inputValue: localStorage.getItem("searchterm") || ""
         }
 
         this.updateInput = this.updateInput.bind(this)
         this.handleSubmit = this.handleSubmit.bind(this)
     }
 
+   
     updateInput(event) {
-        this.setState({inputValue: event.target.value})
+        this.setState(
+            {
+                inputValue: event.target.value
+            }
+        )
     }
 
     handleSubmit(event) {
+        localStorage.setItem("searchterm", this.state.inputValue)
+
+        this.setState({
+            inputValue: localStorage.getItem("searchterm") || '' 
+        })
+
+        if (event.which === 13) {
+            this.context.router.history.push(this.state.inputValue)
+        }
+
         event.stopPropagation();
     }
 
@@ -35,12 +51,6 @@ export default class SearchBar extends Component<Props, State> {
         router: PropTypes.object
     }
     
-    redirectToTarget = (event) => {
-        event.stopPropagation()
-        if (event.which === 13) {
-            this.context.router.history.push(this.state.inputValue)
-        }
-    }
 
 
     render() {
@@ -52,9 +62,10 @@ export default class SearchBar extends Component<Props, State> {
                         onChange={this.updateInput}
                         type="text" 
                         placeholder="Search.." 
-                        onKeyPress={this.redirectToTarget}
+                        onKeyPress={this.handleSubmit}
                         value={this.state.inputValue}
                         />
+                     
                         <button 
                         style={ searchButton } 
                         type="submit" 
@@ -62,7 +73,6 @@ export default class SearchBar extends Component<Props, State> {
                         >
                         <Link to={this.state.inputValue} style={LinkStyling}>Search</Link>
                         </button>
-                        <p>{this.state.inputValue}</p>
                     </form>
                   
                 )}
@@ -79,7 +89,7 @@ const inputField: ThemedCSSProperties = (theme) => ({
     borderLeft: 'none',
     borderRight: 'none',
     borderBottom: '1px solid grey',
-    outline: 'none',
+    
     margin: 0,
     color: theme.foreground.secondary,
     background: theme.background.secondary

@@ -3,15 +3,23 @@ import { Route, Switch, Link, RouteComponentProps} from 'react-router-dom';
 import Spinner from '../spinner';
 
 import SearchBar from './searchBar'
-import ImageSection from './detailView/imageSection';
+import ImageCard, { ImageUrls } from './detailView/imageCard';
 
 
 
 const MasterView = React.lazy(() => import(/* webpackChunkName: "masterView" */ './masterView'));
 const DetailView = React.lazy(() => import(/* webpackChunkName: "detailView" */ './detailView/detailView'));
 
+
+interface Props {
+    view: string
+}
+
+interface State {
+    imagesUrls: ImageUrls[],
+}
 /** React function component */
-export default class ViewContainer extends React.Component {
+export default class ViewContainer extends React.Component<Props, State> {
     
 
     render() {
@@ -20,8 +28,7 @@ export default class ViewContainer extends React.Component {
                     <Switch>
                         <Route path="/:id" component={DetailView}></Route>       
                         <div style={centeredForm}>
-                            <SearchBar />
-                            <ImageSection />
+                            <SearchBar />      
                         </div>
                     </Switch>
                     
