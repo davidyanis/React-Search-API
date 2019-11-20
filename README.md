@@ -8,5 +8,4 @@ Lägg till din egna access_key från www.unsplash.com i filen `imageSection.tsx`
 Kör först ```npm install``` sedan ```npm run app``` för att starta.
 
 
-## LYCKA TILL!# React-Search
 # React-Search-API
